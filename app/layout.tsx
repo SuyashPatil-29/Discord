@@ -1,26 +1,37 @@
-import Sidebar from '@/components/Sidebar'
-import './globals.css'
-import { Figtree } from 'next/font/google'
+import "./globals.css";
+import { Open_Sans } from "next/font/google";
+import Providers from "@/components/Providers";
+import { Toaster } from "@/components/ui/toaster";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import { cn } from "@/lib/utils";
 
-const font = Figtree({ subsets: ['latin'] })
+const font = Open_Sans({ subsets: ["latin"] });
 
 export const metadata = {
-  title: 'Spotify',
-  description: 'Listen to music',
-}
+  title: "Discord",
+  description: "Discord clone made using NextJS",
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={font.className}>
-        <Sidebar>
-          {children}
-        </Sidebar>
+    <html lang="en" suppressHydrationWarning={true}>
+      <body className={cn(font.className, "bg-white dark:bg-[#313338]")}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          storageKey="discord-theme"
+        >
+          <Providers>
+            {children}
+            <Toaster />
+          </Providers>
+        </ThemeProvider>
       </body>
     </html>
-  )
+  );
 }
