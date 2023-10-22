@@ -1,6 +1,5 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -8,36 +7,38 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  DialogTitle
 } from "@/components/ui/dialog";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage
-  } from "@/components/ui/form";
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { ServerRequest } from "@/lib/validators/validServer";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import {zodResolver} from "@hookform/resolvers/zod"
-import {FileUpload} from "../FileUpload";
-import axios from "axios";
-import {ServerRequest} from "@/lib/validators/validServer";
-import { useRouter } from "next/navigation";
+import { FileUpload } from "../FileUpload";
+import { useModal } from "@/hooks/use-modal-store";
 
 type Props = {};
 
-const InitialModal = (props: Props) => {
+const CreateServerModal = (props: Props) => {
     const router = useRouter()
-    const [isMounted, setIsMounted] = useState(false);
 
-    useEffect(() => {
-        setIsMounted(true);
-      }, []);
+    const {isOpen,onClose,type} = useModal()
+
+    const isModalOpen = isOpen && type === "createServer"
+
+    const handleClose = ()=>{
+      onClose()
+    }
 
     const formSchema = z.object({
         name : z.string().min(1,{
@@ -68,19 +69,14 @@ const InitialModal = (props: Props) => {
 
           form.reset()
           router.refresh()
-          window.location.reload()
-
+          onClose()
         } catch (error) {
           console.log(error);
         }
     }
-
-    if (!isMounted) {
-        return null;
-      }
     
   return (
-    <Dialog open>
+    <Dialog open={isModalOpen} onOpenChange={handleClose}>
       <DialogContent className="bg-white text-black p-0 overflow-hidden">
         <DialogHeader className="pt-8 px-6">
           <DialogTitle className="text-2xl text-center font-bold">
@@ -148,4 +144,4 @@ const InitialModal = (props: Props) => {
   )
 }
 
-export default InitialModal;
+export default CreateServerModal;

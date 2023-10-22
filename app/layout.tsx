@@ -4,6 +4,7 @@ import Providers from "@/components/Providers";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { cn } from "@/lib/utils";
+import { ModalProvider } from "@/components/modals/modal-provider";
 
 const font = Open_Sans({ subsets: ["latin"] });
 
@@ -27,6 +28,7 @@ export default function RootLayout({
           storageKey="discord-theme"
         >
           <Providers>
+          <ModalProvider />
             {children}
             <Toaster />
           </Providers>
