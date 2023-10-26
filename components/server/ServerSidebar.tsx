@@ -51,7 +51,7 @@ const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
   );
 
   const role = server.members.find(
-    (member) => member.profileId === profile.id
+    (member) => member.userId === profile.id
   )?.role;
 
   return (

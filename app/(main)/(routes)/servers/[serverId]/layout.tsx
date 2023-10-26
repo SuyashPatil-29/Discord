@@ -19,7 +19,7 @@ const ServerLayout = async ({
       id: serverId,
       members: {
         some: {
-          profileId: profile.id,
+          userId: profile.id,
         },
       },
     },

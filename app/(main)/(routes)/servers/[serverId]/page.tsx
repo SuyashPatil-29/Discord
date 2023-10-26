@@ -14,7 +14,7 @@ const ServerHomePage = async ({params :{serverId}}: Props) => {
         where : {
             members : {
                 some : {
-                    profileId : profile.id
+                    userId : profile.id
                 }
             }
         }

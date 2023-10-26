@@ -34,10 +34,11 @@ const UserAuthForm = ({ className }: UserAuthFormProps) => {
     <div className={cn("flex justify-center", className)}>
       <Button
         size="sm"
-        className="w-full"
+        className="w-full bg-black text-white m-2"
         onClick={loginWithGoogle}
         isLoading={isLoading}
         disabled={isLoading}
+        variant={"secondary"}
       >
         {isLoading ? null : <Icons.google className="h-4 w-4 mr-2" />}
         Google

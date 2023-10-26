@@ -65,7 +65,7 @@ const CreateServerModal = (props: Props) => {
             name : values.name,
             image : values.image
           }
-          await axios.post("/api/createserver", payload)
+          await axios.post("/api/server", payload)
 
           form.reset()
           router.refresh()

@@ -5,6 +5,7 @@ import { MemberRole} from "@prisma/client"
 import { ServerMemberProfile } from '@/types/ServerMemberProfiles'
 import { DropdownMenu,DropdownMenuContent,DropdownMenuItem,DropdownMenuSeparator,DropdownMenuTrigger } from '../ui/dropdown-menu'
 import { ChevronDown, LogOut, PlusCircle, Settings, Trash, UserPlus, Users } from 'lucide-react'
+import { useModal } from '@/hooks/use-modal-store'
 
 type Props = {
     server : ServerMemberProfile,
@@ -12,6 +13,7 @@ type Props = {
 }
 
 const ServerHeader = ({server,role}: Props) => {
+  const {onOpen} = useModal()  
   const isAdmin = role === MemberRole.ADMIN  
   const isModerator = isAdmin || role === MemberRole.MODERATOR
   const isGuest = role === MemberRole.GUEST
@@ -31,7 +33,7 @@ const ServerHeader = ({server,role}: Props) => {
       >
         {isModerator && (
           <DropdownMenuItem
-            // onClick={() => onOpen("invite", { server })}
+            onClick={() => onOpen("invite", { server })}
             className="text-indigo-600 dark:text-indigo-400 dark:hover:bg-[rgb(81,101,242)] dark:hover:text-neutral-200 px-3 py-2 text-sm cursor-pointer"
           >
             Invite People
@@ -40,7 +42,7 @@ const ServerHeader = ({server,role}: Props) => {
         )}
         {isAdmin && (
           <DropdownMenuItem
-            // onClick={() => onOpen("editServer", { server })}
+            onClick={() => onOpen("editServer", { server })}
             className="px-3 py-2 text-sm cursor-pointer dark:hover:bg-[rgb(81,101,242)] dark:hover:text-neutral-200"
           >
             Server Settings
@@ -49,7 +51,7 @@ const ServerHeader = ({server,role}: Props) => {
         )}
         {isAdmin && (
           <DropdownMenuItem
-            // onClick={() => onOpen("members", { server })}
+            onClick={() => onOpen("members", { server })}
             className="px-3 py-2 text-sm cursor-pointer dark:hover:bg-[rgb(81,101,242)] dark:hover:text-neutral-200"
           >
             Manage Members
@@ -58,7 +60,7 @@ const ServerHeader = ({server,role}: Props) => {
         )}
         {isModerator && (
           <DropdownMenuItem
-            // onClick={() => onOpen("createChannel")}
+            onClick={() => onOpen("createChannel")}
             className="px-3 py-2 text-sm cursor-pointer dark:hover:bg-[rgb(81,101,242)] dark:hover:text-neutral-200"
           >
             Create Channel
@@ -71,7 +73,7 @@ const ServerHeader = ({server,role}: Props) => {
         {isAdmin && (
           <DropdownMenuItem
             // onClick={() => onOpen("deleteServer", { server })}
-            className="text-rose-500 px-3 py-2 text-sm cursor-pointer"
+            className="text-rose-500 px-3 py-2 text-sm cursor-pointer dark:hover:bg-red-500 dark:hover:text-neutral-200"
           >
             Delete Server
             <Trash className="h-4 w-4 ml-auto" />
@@ -79,8 +81,8 @@ const ServerHeader = ({server,role}: Props) => {
         )}
         {!isAdmin && (
           <DropdownMenuItem
-            // onClick={() => onOpen("leaveServer", { server })}
-            className="text-rose-500 px-3 py-2 text-sm cursor-pointer"
+            onClick={() => onOpen("leaveServer", { server })}
+            className="text-rose-500 px-3 py-2 text-sm cursor-pointer dark:hover:bg-red-500 dark:hover:text-neutral-200"
           >
             Leave Server
             <LogOut className="h-4 w-4 ml-auto" />
