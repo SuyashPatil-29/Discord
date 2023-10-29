@@ -1,12 +1,12 @@
 "use client";
 
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
 } from "@/components/ui/dialog";
 import { useModal } from "@/hooks/use-modal-store";
 import { useMutation } from "@tanstack/react-query";
@@ -17,19 +17,19 @@ import { Button } from "../ui/button";
 
 type Props = {};
 
-const LeaveServerModal = (props: Props) => {
+const DeleteServerModal = (props: Props) => {
   const router = useRouter();
   const { onOpen, isOpen, onClose, type, data } = useModal();
   const [isLoading, setIsLoading] = useState(false);
 
   const { server } = data;
 
-  const isModalOpen = isOpen && type === "leaveServer";
+  const isModalOpen = isOpen && type === "deleteServer";
 
-  const { mutate: handleLeaveServer } = useMutation({
+  const { mutate: handleDeleteServer } = useMutation({
     mutationFn: async () => {
-      const { data } = await axios.patch(
-        `/api/server/${server?.id}/leave-server`,
+      await axios.delete(
+        `/api/server/${server?.id}`,
       );
       setIsLoading(true);
       return data;
@@ -47,14 +47,15 @@ const LeaveServerModal = (props: Props) => {
       <DialogContent className="bg-white text-black p-0 overflow-hidden">
         <DialogHeader className="pt-8 px-6">
           <DialogTitle className="text-2xl text-center font-bold">
-            Leave Server
+            Delete Server
           </DialogTitle>
           <DialogDescription className="text-center text-zinc-500">
-            Are you sure you want to leave{" "}
+            Are you sure you want to do this? {" "}
+            <br />
             <span className="font-semibold text-indigo-500">
               {server?.name}
             </span>
-            ?
+            will be permanently deleted.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="bg-gray-100 px-6 py-4">
@@ -66,7 +67,7 @@ const LeaveServerModal = (props: Props) => {
               disabled={isLoading}
               className="bg-red-500 hover:bg-red-400"
               variant="primary"
-              onClick={() => handleLeaveServer()}
+              onClick={() => handleDeleteServer()}
             >
               Confirm
             </Button>
@@ -77,4 +78,4 @@ const LeaveServerModal = (props: Props) => {
   );
 };
 
-export default LeaveServerModal;
+export default DeleteServerModal;

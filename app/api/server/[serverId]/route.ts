@@ -4,7 +4,30 @@ import { db } from "@/lib/db";
 import { serverSchema } from "@/lib/validators/validServer";
 import { NextResponse } from "next/server";
 
-export async function PATCH(req:Request, {params}:{params : {serverId:string}}) {
+export async function DELETE(req:Request, {params : {serverId}}:{params : {serverId:string}}) {
+  try {
+    const session = await getAuthSession();
+    if(!session?.user) return new Response("Unauthorized", { status: 401 })
+
+    const server = await db.server.delete({
+      where : {
+        id : serverId,
+        userId : session.user.id
+      }
+    })
+
+    console.log(server);
+    
+    if(!server) return new Response("Unauthorized No Server", { status: 401 })
+    return NextResponse.json(server);
+  }
+   catch (error) {
+    console.log("DELETE SERVER ERROR", error);
+    return new Response("Unexpected error occured", { status: 400 }) 
+  }
+}
+
+export async function PATCH(req:Request, {params : {serverId}}:{params : {serverId:string}}) {
   try {
     const session = await getAuthSession();
     if(!session?.user) return new Response("Unauthorized", { status: 401 })
@@ -18,7 +41,7 @@ export async function PATCH(req:Request, {params}:{params : {serverId:string}}) 
  
     const server = await db.server.update({
         where : {
-            id : params.serverId,
+            id : serverId,
             userId : profile.id
         },
         data : {
