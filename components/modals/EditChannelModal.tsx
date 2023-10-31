@@ -78,7 +78,7 @@ export const EditChannelModal = () => {
     try {
       const payload :editChannelRequest = {
         values : values,
-        serverId : params.serverId as string,
+        serverId : params?.serverId as string,
         channelId : channel?.id as string,
       }
       await axios.patch(`/api/channel/${channel?.id}`, payload);

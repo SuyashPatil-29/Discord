@@ -12,66 +12,83 @@ export default async function handler(
 
   try {
 
-    const {profile, content, fileUrl} = req.body
-    const {serverId, channelId} = req.query
+    const { profile , content, fileUrl } = req.body;    
+    const { serverId, channelId } = req.query;
     
-    if(!profile) return res.status(400).json({ error: "No profile" })
-    if(!serverId) return res.status(400).json({ error: "No ServerId" })
-    if(!channelId) return res.status(400).json({ error: "No chennelId" })
-    if(!content) return res.status(400).json({ error: "No Content" })
+    if (!profile) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }    
+  
+    if (!serverId) {
+      return res.status(400).json({ error: "Server ID missing" });
+    }
+      
+    if (!channelId) {
+      return res.status(400).json({ error: "Channel ID missing" });
+    }
+          
+    if (!content) {
+      return res.status(400).json({ error: "Content missing" });
+    }
 
     const server = await db.server.findFirst({
-        where : {
-            id : serverId as string,
-            members : {
-                some :{
-                    userId : profile.id
-                }
-            }
-        },
-        include : {
-            members : true
+      where: {
+        id: serverId as string,
+        members: {
+          some: {
+            userId: profile.id
+          }
         }
-    })
+      },
+      include: {
+        members: true,
+      }
+    });
 
-    if(!server) return res.status(400).json({ error: "No Server" })
+    if (!server) {
+      return res.status(404).json({ message: "Server not found" });
+    }
 
     const channel = await db.channel.findFirst({
-        where : {
-            id : channelId as string,
-            serverId : serverId as string
-        }
-    })
+      where: {
+        id: channelId as string,
+        serverId: serverId as string,
+      }
+    });
 
-    if(!channel) return res.status(400).json({ error: "No Channel" })
-    
-    const member = server.members.find((member) => member.userId === profile.id)
-    
-    if(!member) return res.status(400).json({ error: "No Member" })
+    if (!channel) {
+      return res.status(404).json({ message: "Channel not found" });
+    }
+
+    const member = server.members.find((member) => member.userId === profile.user.id);
+
+    if (!member) {
+      return res.status(404).json({ message: "Member not found" });
+    }
 
     const message = await db.message.create({
-        data : {
-            content,
-            fileUrl,
-            channelId : channelId as string,
-            memberId : member.id
-        },
-        include : {
-            member : {
-                include :{
-                    User : true
-                }
-            }
+      data: {
+        content,
+        fileUrl,
+        channelId: channelId as string,
+        memberId: member.id,
+      },
+      include: {
+        member: {
+          include: {
+            User: true,
+          }
         }
-    })
+      }
+    });
 
-    const channelKey = `chat:${channelId}:messages`
+    const channelKey = `chat:${channelId}:messages`;
 
-    res?.socket?.server?.io?.emit(channelKey, message)
-    
+    res?.socket?.server?.io?.emit(channelKey, message);
+
     return res.status(200).json(message);
   } catch (error) {
-    console.log("MESSAGES PAGES API ROUTE", error);
-    return res.status(500).json({ error });
+    console.log("[MESSAGES_POST]", error);
+    return res.status(500).json({ message: "Internal Error" }); 
   }
 }
