@@ -24,6 +24,7 @@ import { z } from "zod";
 import { FileUpload } from "../FileUpload";
 import qs from "query-string"
 import { useSession } from "next-auth/react";
+import { useState } from "react";
 
 type Props = {};
 
@@ -31,6 +32,7 @@ const AttctchFileModal = (props: Props) => {
     const {data:{apiUrl,query},isOpen,onClose,onOpen,type} = useModal()
     const router = useRouter();
     const {data :profile} = useSession() 
+    const [pdfName, setPdfName] = useState("");
 
     const isModalOpen = isOpen && type === "messageFile"
 
@@ -60,7 +62,7 @@ const AttctchFileModal = (props: Props) => {
           const payload = {
             profile,
             fileUrl,
-            content : fileUrl
+            content : pdfName
           }
           const url= qs.stringifyUrl({
             url : apiUrl || "",
@@ -77,6 +79,11 @@ const AttctchFileModal = (props: Props) => {
           console.log(error);
         }
     }
+
+    const handlePdfNameUpdate = (newPdfName : string) => {
+      setPdfName(newPdfName);
+    }
+    
     
   return (
     <Dialog open={isModalOpen} onOpenChange={handleClose}>
@@ -104,6 +111,7 @@ const AttctchFileModal = (props: Props) => {
                           endpoint="messageFile"
                           value={field.value}
                           onChange={field.onChange}
+                          onUploadSuccess={handlePdfNameUpdate}
                         />
                       </FormControl>
                     </FormItem>

@@ -10,11 +10,12 @@ import {
   FormItem
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Plus, Smile } from 'lucide-react';
-import qs from "query-string"
-import axios from 'axios';
-import { useSession } from 'next-auth/react';
 import { useModal } from '@/hooks/use-modal-store';
+import axios from 'axios';
+import { Plus } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import qs from "query-string";
+import EmojiPicker from './EmojiPicker';
 
 type Props = {
   apiUrl : string;
@@ -88,7 +89,7 @@ const ChatInput = ({apiUrl,name,query,type}: Props) => {
                 value={field.value}
                 />
                 <div className="absolute top-7 right-8">
-                  <Smile />
+                  <EmojiPicker onChange={(emoji:string)=>field.onChange(`${field.value}${emoji}`)}/>
                 </div>
               </div>
             </FormControl>
