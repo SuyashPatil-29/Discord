@@ -14,6 +14,7 @@ import { Button } from "../ui/button";
 import qs from "query-string"
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import { useModal } from "@/hooks/use-modal-store";
 
 type Props = {
   id: string;
@@ -53,7 +54,8 @@ const ChatItem = ({
   timeStamp,
 }: Props) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+
+  const {onOpen} = useModal();
 
   const fileType = fileUrl?.split(".").pop();
   const isAdmin = currentMember.role === MemberRole.ADMIN;
@@ -108,6 +110,9 @@ const ChatItem = ({
       }
 
       await axios.patch(url,payload)
+
+      form.reset()
+      setIsEditing(false)
 
     } catch (error) {
       console.log(error);
@@ -167,7 +172,7 @@ const ChatItem = ({
             <p
               className={cn(
                 "text-sm text-zinc-600 dark:text-zinc-300",
-                deleted && "italic text-zinc-500 dark:text-zinc-50 text-xs mt-1"
+                deleted && "italic text-zinc-500 dark:text-zinc-50 text-sm mt-1"
               )}
             >
               {content}
@@ -221,7 +226,12 @@ const ChatItem = ({
             </ActionTooltip>
           )}
           <ActionTooltip label="Delete">
-            <Trash className="cursor-pointer ml-auto w-4 h-4 text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition" />
+            <Trash className="cursor-pointer ml-auto w-4 h-4 text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition"
+            onClick={() => onOpen("deleteMessage" ,{
+              apiUrl : `${socketUrl}/${id}`,
+              query : socketQuery,
+            })}
+            />
           </ActionTooltip>
         </div>
       )}
