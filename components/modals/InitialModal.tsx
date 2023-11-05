@@ -106,6 +106,7 @@ const InitialModal = (props: Props) => {
                           endpoint="serverImage"
                           value={field.value}
                           onChange={field.onChange}
+                          onUploadSuccess={(url)=>console.log(url)}
                         />
                       </FormControl>
                     </FormItem>
