@@ -1,3 +1,4 @@
+import MediaRoom from "@/components/MediaRoom";
 import ChatHeader from "@/components/chat/ChatHeader";
 import ChatInput from "@/components/chat/ChatInput";
 import ChatMessages from "@/components/chat/ChatMessages";
@@ -12,10 +13,14 @@ type Props = {
     memberId: string;
     serverId: string;
   };
+  searchParams: {
+    video?: boolean;
+  };
 };
 
 const MemberConversationsPage = async ({
   params: { memberId, serverId },
+  searchParams: { video },
 }: Props) => {
   const profile = await currentProfile();
 
@@ -52,27 +57,39 @@ const MemberConversationsPage = async ({
         name={otherMember.User.name!}
         imageUrl={otherMember.User.image!}
       />
-      <ChatMessages
-        member={currentMember}
-        name={otherMember.User.name!}
+      {!video && (
+        <>
+          <ChatMessages
+            member={currentMember}
+            name={otherMember.User.name!}
+            chatId={conversation.id}
+            type="conversation"
+            apiUrl="/api/direct-messages"
+            paramKey="conversationId"
+            paramValue={conversation.id}
+            socketUrl="/api/socket/direct-messages"
+            socketQuery={{
+              conversationId: conversation.id,
+            }}
+          />
+          <ChatInput
+            name={otherMember.User.name!}
+            type="conversation"
+            apiUrl="/api/socket/direct-messages"
+            query={{
+              conversationId: conversation.id,
+            }}
+          />
+        </>
+      )}
+
+      {video && (
+        <MediaRoom
         chatId={conversation.id}
-        type="conversation"
-        apiUrl="/api/direct-messages"
-        paramKey="conversationId"
-        paramValue={conversation.id}
-        socketUrl="/api/socket/direct-messages"
-        socketQuery={{
-          conversationId: conversation.id,
-        }}
-      />
-      <ChatInput
-        name={otherMember.User.name!}
-        type="conversation"
-        apiUrl="/api/socket/direct-messages"
-        query={{
-          conversationId: conversation.id,
-        }}
-      />
+        video={true}
+        audio={true}
+        />
+      )}
     </div>
   );
 };

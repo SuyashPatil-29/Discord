@@ -2,9 +2,11 @@ import ChatHeader from "@/components/chat/ChatHeader";
 import ChatInput from "@/components/chat/ChatInput";
 import ChatMessages from "@/components/chat/ChatMessages";
 import { currentProfile } from "@/lib/current-profile";
+import { ChannelType } from "@prisma/client";
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 import React from "react";
+import MediaRoom from "@/components/MediaRoom";
 
 type Props = {
   params: {
@@ -39,6 +41,8 @@ const ChannelChatPage = async ({ params: { serverId, channelId } }: Props) => {
         serverId={channel.serverId}
         type="channel"
       />
+      {channel.type === ChannelType.TEXT && (
+        <>
           <ChatMessages
             member={member}
             name={channel.name}
@@ -62,6 +66,25 @@ const ChannelChatPage = async ({ params: { serverId, channelId } }: Props) => {
               serverId: channel.serverId,
             }}
           />
+        </>
+      )}
+
+      {channel.type === ChannelType.AUDIO && (
+        <MediaRoom
+        chatId={channelId}
+        video={false}
+        audio={true}
+        />
+      )}
+
+      {channel.type === ChannelType.VIDEO && (
+        <MediaRoom
+        chatId={channelId}
+        video={true}
+        audio={true}
+        />
+      )}
+
     </div>
   );
 };

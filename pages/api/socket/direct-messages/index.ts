@@ -64,7 +64,7 @@ export default async function handler(
       return res.status(404).json({ message: "Conversation not found" });
     }
 
-    const member = conversation.memberOne.serverId === profile.id ? conversation.memberOne : conversation.memberTwo
+    const member = conversation.memberOne.serverId === profile.id ? conversation.memberTwo : conversation.memberOne
 
     if (!member) {
       return res.status(404).json({ message: "Member not found" });

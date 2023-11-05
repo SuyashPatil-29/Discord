@@ -2,6 +2,7 @@ import { Hash } from 'lucide-react'
 import MobileNav from '../MobileNav'
 import UserAvatar from '../UserAvatar'
 import SocketIndicator from '../SocketIndicator'
+import { ChatVideoButton } from '../ChatVideoButton'
 
 type Props = {
     serverId: string,
@@ -28,6 +29,9 @@ const ChatHeader = ({name,serverId,type,imageUrl}: Props) => {
         </p>
 
         <div className='ml-auto mr-5 flex items-center'>
+          {type === "conversation" && (
+            <ChatVideoButton />
+          )}
           <SocketIndicator />
         </div>
     </div>
